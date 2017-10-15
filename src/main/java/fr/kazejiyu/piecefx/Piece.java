@@ -22,8 +22,13 @@ import javafx.stage.Stage;
  */
 public final class Piece {
 	
+	/** The root of all scenes/acts */
 	private final Stage stage;
+	
+	/** The environment : contains the dependencies to inject */
 	private final Dependencies dependencies;
+	
+	/** Application's states */
 	private final Map <String, Act> acts = new HashMap<>();
 	private final Map <String, Scene> scenes = new HashMap<>();
 
@@ -71,6 +76,12 @@ public final class Piece {
 		return act;
 	}
 	
+	/**
+	 * Frees an act from memory.
+	 * 
+	 * @param name
+	 * 			The name of the act to free
+	 */
 	public void abandonAct(String name) {
 		acts.remove(name);
 		scenes.remove(name);

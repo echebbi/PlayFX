@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -20,8 +21,15 @@ public class SerializedProperties {
 	/** The properties loaded from the file */
 	private final Properties properties = new Properties();
 	
+	/**
+	 * Creates a lazy serialized property.
+	 * 
+	 * @param is
+	 * 			The stream from which the properties will be loaded. 
+	 * 			Must not be {@code null}.
+	 */
 	public SerializedProperties(InputStream is) {
-		this.is = is;
+		this.is = Objects.requireNonNull(is);
 	}
 	
 	/**
@@ -33,10 +41,22 @@ public class SerializedProperties {
 		properties.load(is);
 	}
 	
+	/**
+	 * Returns the properties' name.
+	 * @return the properties' name.
+	 */
 	public List <?> getNames() {
 		return Collections.list(properties.propertyNames());
 	}
 	
+	/**
+	 * Returns, if present, the property identified by {@code key}.
+	 * 
+	 * @param key
+	 * 			The name of the property to look up.
+	 * 
+	 * @return return the property's value if it exists.
+	 */
 	public Optional <Object> get(String key) {
 		return Optional.ofNullable(properties.getProperty(key));
 	}
