@@ -1,11 +1,11 @@
-package fr.kazejiyu.piecefx;
+package fr.kazejiyu.playfx;
 
 import javafx.scene.Scene;
 
 /**
  * Represents an act, which can be associated to JavaFX's controllers. 
  * <br><br>
- * This interface is intended to be implemented by controllers loaded by {@link Piece}.
+ * This interface is intended to be implemented by controllers loaded by {@link Play}.
  * 
  * @author Emmanuel CHEBBI
  */
@@ -21,6 +21,6 @@ public interface Act {
 	 * @param scene
 	 * 			The scene associated to the act.
 	 */
-	abstract void prepare(Piece piece, Scene scene);
+	abstract void prepare(Play piece, Scene scene);
 	
 }

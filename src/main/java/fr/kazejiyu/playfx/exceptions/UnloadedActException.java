@@ -1,6 +1,6 @@
-package fr.kazejiyu.piecefx.exceptions;
+package fr.kazejiyu.playfx.exceptions;
 
-import fr.kazejiyu.piecefx.Act;
+import fr.kazejiyu.playfx.Act;
 
 /**
  * Thrown when one attempt to access or use an {@link Act} that

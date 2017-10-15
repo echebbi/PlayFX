@@ -1,33 +1,33 @@
-# PieceFX
-PieceFX is a light framework for managing multiple scenes in JavaFX. More specifically, it provides an easy way to manage the different states of a JavaFX application and to pass from one to another. Moreover, it comes with an embedded [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) system.
+# PlayFX
+PlayFX is a light framework for managing multiple scenes in JavaFX. More specifically, it provides an easy way to manage the different states of a JavaFX application and to pass from one to another. Moreover, it comes with an embedded [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) system.
 
 ## A Work in Progress
 As of now, the work is still in progress and the framework is not quite stable.
 
-## PieceFX's API
+## PlayFX's API
 
-### `Piece` class
+### `Play` class
 
-The heart of the framework is the [Piece](https://github.com/KazeJiyu/piecefx/blob/master/src/main/java/fr/kazejiyu/piecefx/Piece.java) class. Following the theater's world analogy, a piece is played on **one stage** and is made of **several scenes**. As such, a `Piece` instance brings the facilities to manage your different scenes.
+The heart of the framework is the [Play](https://github.com/KazeJiyu/playfx/blob/master/src/main/java/fr/kazejiyu/playfx/Play.java) class. Following the theater's world analogy, a play is played on **one stage** and is made of **several scenes**. As such, a `Play` instance brings the facilities to manage your different scenes.
 
-Here is how a simple application would look like with PieceFX :
+Here is how a simple application would look like with PlayFX :
 
 ```java
 public class Launcher extends Application {
 	
   @Override
   public void start(Stage primaryStage) throws IOException {	
-    // Initialize the piece
-    Piece piece = new Piece(primaryStage);
+    // Initialize the play
+    Play play = new Play(primaryStage);
 
     // Prepare a new scene and call it "firstView". It is semantically equal to FXMLLoader.load
-    piece.directAct("firstView", MyController.class.getResource("my.fxml"));
+    play.prepare("firstView", MyController.class.getResource("my.fxml"));
 
     // Put the scene "firstView" on the stage. It is semantically equal to stage.setScene
-    piece.makeOnStage("firstView");
+    play.setScene("firstView");
 
     // Finally, let the show begin ! It is semantically equal to stage.show
-    piece.start();
+    play.start();
   }
 
   public static void main(String[] args) {
@@ -45,12 +45,12 @@ To overcome this difficulty, `Act` defines a only a method :
 ```java
 public interface Act {
 
-  public void prepare(Piece piece, Scene scene);
+  public void prepare(Play play, Scene scene);
 
 }
 ```
 
-If a controller loaded by PieceFX implements `Act`, `prepare` is called once the associated `Scene` is created. The controller can hence set up itself and get a reference to the `Piece` instance. However, since `prepare` is called by `Piece.directAct`, please note that the scene is **not** yet shown on the screen. As a result, some methods, including :
+If a controller loaded by PlayFX implements `Act`, `prepare` is called once the associated `Scene` is created. The controller can hence set up itself and get a reference to the `Play` instance. However, since `prepare` is called by `Play.directAct`, please note that the scene is **not** yet shown on the screen. As a result, some methods, including :
  - `getWidth` / `getHeight`,
  - `getWindow` 
  do not return an exploitable output.
@@ -59,9 +59,9 @@ If a controller loaded by PieceFX implements `Act`, `prepare` is called once the
  
  ### `Dependencies` class
  
- On top of the injection of the UI components already provided by FXML, PieceFX brings the possibility to inject custom fields.
+ On top of the injection of the UI components already provided by FXML, PlayFX brings the possibility to inject custom fields.
  
- First, the services to use have to be specified to PieceFX _via_ a `Dependencies` instance. This class presents two methods that make able to tell PieceFX to check the fields to inject against either their name or their type. For instance :
+ First, the services to use have to be specified to PlayFX _via_ a `Dependencies` instance. This class presents two methods that make able to tell PlayFX to check the fields to inject against either their name or their type. For instance :
  
  ```java
  public class Launcher extends Application {
@@ -78,11 +78,11 @@ If a controller loaded by PieceFX implements `Act`, `prepare` is called once the
     // All the fields of type Context will be injected, whatever their name
     dependencies.registerType(context.getClass(), context);    
     
-    Piece piece = new Piece(primaryStage, dependencies);  // create the piece with custom dependencies
-    piece.directAct("firstView", MyController.class.getResource("my.fxml"));  // load the scene
-    piece.makeOnStage("firstView"); // set the scene on the stage
+    Play play = new Play(primaryStage, dependencies);  // create the play with custom dependencies
+    play.prepare("firstView", MyController.class.getResource("my.fxml"));  // load the scene
+    play.setScene("firstView"); // set the scene on the stage
 
-    piece.start(); // show the scene
+    play.start(); // show the scene
   }
 
   public static void main(String[] args) {
@@ -91,7 +91,7 @@ If a controller loaded by PieceFX implements `Act`, `prepare` is called once the
 }
  ```
  
- Secondly, controllers must tell PieceFX which fields are opened to injection. This is merely done by annotating the relevant fields with the `Inject` annotation :
+ Secondly, controllers must tell PlayFX which fields are opened to injection. This is merely done by annotating the relevant fields with the `Inject` annotation :
  
  ```java
     @Inject Context context;  // will be injected with the object instanciated above
@@ -103,7 +103,7 @@ If a controller loaded by PieceFX implements `Act`, `prepare` is called once the
  
  Primitive values can also be specified from configuration files and be available for injections.
  
-It is possible to create one configuration file per controller in order to cleary separate unrelated data. Such files **must** be named `config.properties` and being located in the same directory as the corresponding controller. Otherwise, PieceFX won't identify them and therefore won't be able to inject their content.
+It is possible to create one configuration file per controller in order to cleary separate unrelated data. Such files **must** be named `config.properties` and being located in the same directory as the corresponding controller. Otherwise, PlayFX won't identify them and therefore won't be able to inject their content.
 
 #### Formatting
 

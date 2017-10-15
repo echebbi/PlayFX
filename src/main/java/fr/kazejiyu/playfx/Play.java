@@ -1,14 +1,15 @@
-package fr.kazejiyu.piecefx;
+package fr.kazejiyu.playfx;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiFunction;
 
-import fr.kazejiyu.piecefx.exceptions.UnloadedActException;
-import fr.kazejiyu.piecefx.injection.Dependencies;
-import fr.kazejiyu.piecefx.injection.InjectorFactory;
+import fr.kazejiyu.playfx.exceptions.UnloadedActException;
+import fr.kazejiyu.playfx.injection.Dependencies;
+import fr.kazejiyu.playfx.injection.InjectorFactory;
 import javafx.animation.Animation;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,7 +23,7 @@ import javafx.stage.Stage;
  * 
  * @author Emmanuel CHEBBI
  */
-public final class Piece {
+public final class Play {
 	
 	/** The root of all scenes/acts */
 	private final Stage stage;
@@ -30,18 +31,34 @@ public final class Piece {
 	/** The environment : contains the dependencies to inject */
 	private final Dependencies dependencies;
 	
+	private final InjectorFactory injectorFactory;
+	
 	/** Application's states */
-	private final Map <String, Act> acts = new HashMap<>();
+	private final Map <String, Object> acts = new HashMap<>();
 	private final Map <String, Scene> scenes = new HashMap<>();
+	
+	/**
+	 * Creates a new piece that will be directed on the given stage.
+	 * 
+	 * @param stage
+	 * 			The primary stage of the application.
+	 */
+	public Play(Stage stage) {
+		this(stage, new Dependencies());
+	}
 
 	/**
 	 * Creates a new piece that will be directed on the given stage.
 	 * 
 	 * @param stage
+	 * 			The primary stage of the application.
+	 * @param dependencies
+	 * 			Defines the values available to be injected into controllers.
 	 */
-	public Piece(Stage stage, Dependencies dependencies) {
-		this.stage = stage;
-		this.dependencies = dependencies;
+	public Play(Stage stage, Dependencies dependencies) {
+		this.stage = Objects.requireNonNull(stage);
+		this.dependencies = Objects.requireNonNull(dependencies);
+		this.injectorFactory = new InjectorFactory(dependencies);
 	}
 	
 	/** Convenience method that calls {@code stage.setTitle(title); } */
@@ -67,15 +84,17 @@ public final class Piece {
 	 * 
 	 * @throws IOException if {@code FXMLLoader} fails to load {@code location}.
 	 */
-	public <T extends Act> T directAct(String name, URL location) throws IOException {
+	public <T> T prepare(String name, URL location) throws IOException {
 		FXMLLoader loader = new FXMLLoader(location);
-		loader.setControllerFactory( new InjectorFactory(dependencies) );
+		loader.setControllerFactory(injectorFactory);
 
 		Parent root = loader.load();
 		Scene scene = new Scene(root);
 		T act = loader.getController();
 		
-		act.prepare(this, scene);
+		// TODO Replace instanceof by dynamic dispatch ?
+		if( act instanceof Act )
+			((Act) act).prepare(this, scene);
 		
 		acts.put(name, act);
 		scenes.put(name, scene);
@@ -89,7 +108,7 @@ public final class Piece {
 	 * @param name
 	 * 			The name of the act to free
 	 */
-	public Piece abandonAct(String name) {
+	public Play abandon(String name) {
 		acts.remove(name);
 		scenes.remove(name);
 		
@@ -104,7 +123,7 @@ public final class Piece {
 	 * 
 	 * @throws UnloadedActException if the act has not been loaded
 	 */
-	public Piece makeOnStage(String name) {
+	public Play setScene(String name) {
 		if( ! scenes.containsKey(name) )
 			throw new UnloadedActException(name);
 		
@@ -114,18 +133,18 @@ public final class Piece {
 		return this;
 	}
 	
-	public Piece makeOnStage(String name, Animation animation) {
-		return makeOnStage(name, (stage, scene) -> animation);
+	public Play makeOnStage(String name, Animation animation) {
+		return makeOnStage(name, (stage,scene) -> animation);
 	}
 	
-	public Piece makeOnStage(String name, BiFunction <Stage,Scene,Animation> animation) {
+	public Play makeOnStage(String name, BiFunction <Stage,Scene,Animation> animation) {
 		if( ! scenes.containsKey(name) )
 			throw new UnloadedActException(name);
 		
 		Scene nextScene = scenes.get(name);
 		Animation anim = animation.apply(stage, nextScene);
 		
-		anim.setOnFinished(e -> makeOnStage(name));
+		anim.setOnFinished(e -> setScene(name));
 		anim.play();
 		
 		return this;

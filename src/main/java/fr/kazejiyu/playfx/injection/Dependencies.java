@@ -1,4 +1,4 @@
-package fr.kazejiyu.piecefx.injection;
+package fr.kazejiyu.playfx.injection;
 
 import java.lang.reflect.Field;
 import java.security.AccessController;
@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 
-import fr.kazejiyu.piecefx.configuration.SerializedProperties;
+import fr.kazejiyu.playfx.configuration.SerializedProperties;
 
 /**
  * Represents the dependencies to inject into the Acts.

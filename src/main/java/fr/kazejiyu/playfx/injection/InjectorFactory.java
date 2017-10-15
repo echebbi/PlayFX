@@ -1,9 +1,9 @@
-package fr.kazejiyu.piecefx.injection;
+package fr.kazejiyu.playfx.injection;
 
 import java.io.IOException;
 import java.util.Objects;
 
-import fr.kazejiyu.piecefx.configuration.SerializedProperties;
+import fr.kazejiyu.playfx.configuration.SerializedProperties;
 import javafx.util.Callback;
 
 /**

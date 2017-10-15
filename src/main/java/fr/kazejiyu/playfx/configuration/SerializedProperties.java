@@ -1,4 +1,4 @@
-package fr.kazejiyu.piecefx.configuration;
+package fr.kazejiyu.playfx.configuration;
 
 import java.io.IOException;
 import java.io.InputStream;
