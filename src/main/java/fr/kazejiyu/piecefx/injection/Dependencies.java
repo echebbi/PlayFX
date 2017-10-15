@@ -65,10 +65,6 @@ public class Dependencies {
 		// Attempt to load the value from the property file first
 		Optional <Object> prop = properties.get(name);
 		
-		System.out.println("Look for " + name + " into properties");
-		for( Object o : properties.getNames() )
-			System.out.println("Name : " + o);
-		
 		if( prop.isPresent() ) 
 			if( injectField(instance, field, prop.get()) )
 				return true;
@@ -83,6 +79,9 @@ public class Dependencies {
 	
 	private boolean tryToInjectFieldUponType(Object instance, Field field) {
 		Class <?> type = field.getType();
+		
+		if( ! valuesPerClass.containsKey(type) )
+			return false;
 		
 		Object value = valuesPerClass.get(type);
 		return injectField(instance, field, value);

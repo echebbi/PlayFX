@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 import fr.kazejiyu.piecefx.exceptions.UnloadedActException;
 import fr.kazejiyu.piecefx.injection.Dependencies;
 import fr.kazejiyu.piecefx.injection.InjectorFactory;
+import javafx.animation.Animation;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -47,6 +49,11 @@ public final class Piece {
 	
 	/** Convenience method that calls {@code stage.show();} */
 	public void start()	{ stage.show(); }
+	
+	/** Returns the stage of the piece */
+	public Stage getStage() {
+		return stage;
+	}
 
 	/**
 	 * Loads an act.
@@ -82,9 +89,11 @@ public final class Piece {
 	 * @param name
 	 * 			The name of the act to free
 	 */
-	public void abandonAct(String name) {
+	public Piece abandonAct(String name) {
 		acts.remove(name);
 		scenes.remove(name);
+		
+		return this;
 	}
 	
 	/**
@@ -95,11 +104,30 @@ public final class Piece {
 	 * 
 	 * @throws UnloadedActException if the act has not been loaded
 	 */
-	public void makeOnStage(String name) {
+	public Piece makeOnStage(String name) {
 		if( ! scenes.containsKey(name) )
 			throw new UnloadedActException(name);
 		
 		Scene scene = scenes.get(name);
 		stage.setScene(scene);
+		
+		return this;
+	}
+	
+	public Piece makeOnStage(String name, Animation animation) {
+		return makeOnStage(name, (stage, scene) -> animation);
+	}
+	
+	public Piece makeOnStage(String name, BiFunction <Stage,Scene,Animation> animation) {
+		if( ! scenes.containsKey(name) )
+			throw new UnloadedActException(name);
+		
+		Scene nextScene = scenes.get(name);
+		Animation anim = animation.apply(stage, nextScene);
+		
+		anim.setOnFinished(e -> makeOnStage(name));
+		anim.play();
+		
+		return this;
 	}
 }

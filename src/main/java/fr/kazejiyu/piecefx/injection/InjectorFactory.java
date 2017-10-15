@@ -1,6 +1,7 @@
 package fr.kazejiyu.piecefx.injection;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import fr.kazejiyu.piecefx.configuration.SerializedProperties;
 import javafx.util.Callback;
@@ -19,7 +20,7 @@ public class InjectorFactory implements Callback<Class<?>, Object> {
 	private final Dependencies dependencies;
 	
 	public InjectorFactory(Dependencies dependencies) {
-		this.dependencies = dependencies;
+		this.dependencies = Objects.requireNonNull(dependencies);
 	}
 
 	@Override
