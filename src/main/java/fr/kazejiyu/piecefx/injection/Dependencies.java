@@ -5,9 +5,12 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
+
+import fr.kazejiyu.piecefx.configuration.SerializedProperties;
 
 /**
  * Represents the dependencies to inject into the Acts.
@@ -18,8 +21,8 @@ import javax.inject.Inject;
  */
 public class Dependencies {
 
-	Map <String,Object> valuesPerName = new HashMap<>();
-	Map <Class<?>,Object> valuesPerClass = new HashMap<>();
+	private final Map <String,Object> valuesPerName = new HashMap<>();
+	private final Map <Class<?>,Object> valuesPerClass = new HashMap<>();
 	
 	public void registerName(final String name, final Object value) {
 		valuesPerName.put(name, value);
@@ -38,12 +41,12 @@ public class Dependencies {
 		registerName(name, value);
 	}
 	
-	public <T extends Object> T injectFields(final T instance) {
+	public <T extends Object> T injectFields(final T instance, final SerializedProperties properties) {
 		Class <?> clazz = instance.getClass();
 		
 		for( final Field field : clazz.getDeclaredFields() ) {
 			if( field.isAnnotationPresent(Inject.class) ) {
-				boolean injectionSucceeded = tryToInjectFieldUponName(instance, field);
+				boolean injectionSucceeded = tryToInjectFieldUponName(instance, field, properties);
 				
 				if( ! injectionSucceeded )
 					injectionSucceeded = tryToInjectFieldUponType(instance, field);
@@ -56,9 +59,21 @@ public class Dependencies {
 		return instance;
 	}
 
-	private boolean tryToInjectFieldUponName(Object instance, Field field) {
+	private boolean tryToInjectFieldUponName(Object instance, Field field, SerializedProperties properties) {
 		String name = field.getName();
 		
+		// Attempt to load the value from the property file first
+		Optional <Object> prop = properties.get(name);
+		
+		System.out.println("Look for " + name + " into properties");
+		for( Object o : properties.getNames() )
+			System.out.println("Name : " + o);
+		
+		if( prop.isPresent() ) 
+			if( injectField(instance, field, prop.get()) )
+				return true;
+		
+		// Then check environment
 		if( ! valuesPerName.containsKey(name) )
 			return false;
 		

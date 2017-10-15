@@ -7,11 +7,11 @@ import java.util.Map;
 
 import fr.kazejiyu.piecefx.exceptions.UnloadedActException;
 import fr.kazejiyu.piecefx.injection.Dependencies;
+import fr.kazejiyu.piecefx.injection.InjectorFactory;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 /**
  * Represents a set of {@link Act}s.
@@ -57,22 +57,7 @@ public final class Piece {
 	 */
 	public <T extends Act> T directAct(String name, URL location) throws IOException {
 		FXMLLoader loader = new FXMLLoader(location);
-		loader.setControllerFactory( new Callback<Class<?>, Object>() {
-			
-			@Override
-			public Object call(Class<?> param) {
-				System.out.println("Factory called for " + param);
-				
-				try {
-					Object instance = param.newInstance();
-					return dependencies.injectFields(instance);
-				} catch (InstantiationException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
-				
-				return null;
-			}
-		});
+		loader.setControllerFactory( new InjectorFactory(dependencies) );
 
 		Parent root = loader.load();
 		Scene scene = new Scene(root);
