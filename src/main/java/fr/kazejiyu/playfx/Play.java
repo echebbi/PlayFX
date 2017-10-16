@@ -134,7 +134,7 @@ public final class Play {
 	}
 	
 	public Play makeOnStage(String name, Animation animation) {
-		return makeOnStage(name, (stage,scene) -> animation);
+		return makeOnStage(name, (stag,scene) -> animation);
 	}
 	
 	public Play makeOnStage(String name, BiFunction <Stage,Scene,Animation> animation) {

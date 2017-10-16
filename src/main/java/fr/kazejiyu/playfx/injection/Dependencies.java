@@ -7,7 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import fr.kazejiyu.playfx.Play;
 import fr.kazejiyu.playfx.configuration.SerializedProperties;
 
 /**
@@ -21,6 +24,8 @@ public class Dependencies {
 
 	private final Map <String,Object> valuesPerName = new HashMap<>();
 	private final Map <Class<?>,Object> valuesPerClass = new HashMap<>();
+	
+	private static final Logger LOGGER = Logger.getLogger(Play.class.getName());
 	
 	public void registerName(final String name, final Object value) {
 		valuesPerName.put(name, value);
@@ -50,7 +55,7 @@ public class Dependencies {
 					injectionSucceeded = tryToInjectFieldUponType(instance, field);
 				
 				if( ! injectionSucceeded )
-					System.err.println("Failed to inject " + field);
+					LOGGER.log(Level.WARNING, "Unable to inject the field : {0}", field);
 			}
 		}
 		
