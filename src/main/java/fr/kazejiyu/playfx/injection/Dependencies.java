@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.inject.Inject;
-
 import fr.kazejiyu.playfx.configuration.SerializedProperties;
 
 /**
@@ -41,7 +39,7 @@ public class Dependencies {
 		registerName(name, value);
 	}
 	
-	public <T extends Object> T injectFields(final T instance, final SerializedProperties properties) {
+	protected <T extends Object> T injectFields(final T instance, final SerializedProperties properties) {
 		Class <?> clazz = instance.getClass();
 		
 		for( final Field field : clazz.getDeclaredFields() ) {
