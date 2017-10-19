@@ -63,7 +63,8 @@ public class Dependencies {
 	}
 
 	private boolean tryToInjectFieldUponName(Object instance, Field field, SerializedProperties properties) {
-		String name = field.getName();
+		Inject inject = field.getAnnotation(Inject.class);
+		String name = inject.name().isEmpty() ? field.getName() : inject.name();
 		
 		// Attempt to load the value from the property file first
 		Optional <Object> prop = properties.get(name);
