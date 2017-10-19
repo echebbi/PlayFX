@@ -2,6 +2,7 @@ package fr.kazejiyu.playfx.injection;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,12 +21,14 @@ public class InjectorFactory implements Callback<Class<?>, Object> {
 	
 	private static final String CONFIG_FILE = "config.properties"; 
 	
-	private final Dependencies dependencies;
+	private final Injector injector;
+	private final Function<String, Object> instanciator;
 	
 	private static final Logger LOGGER = Logger.getLogger(Play.class.getName());
 	
-	public InjectorFactory(Dependencies dependencies) {
-		this.dependencies = Objects.requireNonNull(dependencies);
+	public InjectorFactory(Function <String,Object> instanciator) {
+		this.instanciator = Objects.requireNonNull(instanciator);
+		this.injector = new Injector(this.instanciator);
 	}
 
 	@Override
@@ -34,7 +37,7 @@ public class InjectorFactory implements Callback<Class<?>, Object> {
 			Object instance = clazz.newInstance();
 			SerializedProperties properties = loadPropertiesFor(clazz);
 			
-			return dependencies.injectFields(instance, properties);
+			return injector.injectFields(instance, properties);
 		} catch (InstantiationException | IllegalAccessException e) {
 			LOGGER.log(Level.SEVERE, "Failed to inject instance of {0} : {1}", new Object[] {clazz, e});
 		}

@@ -8,6 +8,8 @@ import javafx.scene.Scene;
  * This interface is intended to be implemented by controllers loaded by {@link Play}.
  * 
  * @author Emmanuel CHEBBI
+ * 
+ * TODO Discuss the utility of interface Act
  */
 public interface Act {
 

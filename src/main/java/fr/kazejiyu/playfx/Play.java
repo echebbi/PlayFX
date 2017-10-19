@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import fr.kazejiyu.playfx.exceptions.UnloadedActException;
-import fr.kazejiyu.playfx.injection.Dependencies;
 import fr.kazejiyu.playfx.injection.InjectorFactory;
 import javafx.animation.Animation;
 import javafx.fxml.FXMLLoader;
@@ -28,10 +28,8 @@ public final class Play {
 	/** The root of all scenes/acts */
 	private final Stage stage;
 	
-	/** The environment : contains the dependencies to inject */
-	private final Dependencies dependencies;
-	
-	private final InjectorFactory injectorFactory;
+	/** Creates injected controllers  */
+	private final InjectorFactory factory;
 	
 	/** Application's states */
 	private final Map <String, Object> acts = new HashMap<>();
@@ -44,7 +42,7 @@ public final class Play {
 	 * 			The primary stage of the application.
 	 */
 	public Play(Stage stage) {
-		this(stage, new Dependencies());
+		this(stage, name -> null);
 	}
 
 	/**
@@ -55,10 +53,9 @@ public final class Play {
 	 * @param dependencies
 	 * 			Defines the values available to be injected into controllers.
 	 */
-	public Play(Stage stage, Dependencies dependencies) {
+	public Play(Stage stage, Function <String,Object> instanciator) {
 		this.stage = Objects.requireNonNull(stage);
-		this.dependencies = Objects.requireNonNull(dependencies);
-		this.injectorFactory = new InjectorFactory(dependencies);
+		this.factory = new InjectorFactory(instanciator);
 	}
 	
 	/** Convenience method that calls {@code stage.setTitle(title); } */
@@ -86,7 +83,7 @@ public final class Play {
 	 */
 	public <T> T prepare(String name, URL location) throws IOException {
 		FXMLLoader loader = new FXMLLoader(location);
-		loader.setControllerFactory(injectorFactory);
+		loader.setControllerFactory(factory);
 
 		Parent root = loader.load();
 		Scene scene = new Scene(root);
@@ -108,7 +105,7 @@ public final class Play {
 	 * @param name
 	 * 			The name of the act to free
 	 */
-	public Play abandon(String name) {
+	public Play removeScene(String name) {
 		acts.remove(name);
 		scenes.remove(name);
 		
