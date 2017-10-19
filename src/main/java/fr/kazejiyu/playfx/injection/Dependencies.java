@@ -27,11 +27,45 @@ public class Dependencies {
 	
 	private static final Logger LOGGER = Logger.getLogger(Play.class.getName());
 	
+	/**
+	 * Makes {@code value} available as injected value.
+	 * <br><br>
+	 * {@code value} will be injected into fields annotated with {@link Inject}
+	 * and called {@code name}.
+	 * 
+	 * @param name
+	 * 			The name of the fields to inject.
+	 * @param value
+	 * 			The value to be injected.
+	 */
 	public void registerName(final String name, final Object value) {
 		valuesPerName.put(name, value);
 	}
 	
-	// TODO check if getClass() can be used instead of asking user for clazz
+	/**
+	 * Makes {@code value} available as injected value.
+	 * <br><br>
+	 * {@code value} will be injected into fields of the same type.
+	 * <br><br>
+	 * This convenience method is a shortcut for {@code registerClass(value.getClass(), value);}
+	 * 
+	 * @param value
+	 * 			The value to be injected.
+	 */
+	public void registerClass(final Object value) {
+		registerClass(value.getClass(), value);
+	}
+	
+	/**
+	 * Makes {@code value} available as injected value.
+	 * <br><br>
+	 * {@code value} will be injected into fields which type is {@code clazz}.
+	 * 
+	 * @param clazz
+	 * 			The type of the fields to inject.
+	 * @param value
+	 * 			The value to be injected.
+	 */
 	public void registerClass(final Class<?> clazz, final Object value) {
 		if( ! clazz.isInstance(value) )
 			throw new ClassCastException(value + " is not a subclass of " + clazz);
@@ -39,6 +73,36 @@ public class Dependencies {
 		valuesPerClass.put(clazz, value);
 	}
 	
+	/**
+	 * Makes {@code value} available as injected value.
+	 * <br><br>
+	 * {@code value} will be injected into fields called {@code name} or which type 
+	 * match {@code value}'s one.
+	 * <br><br>
+	 * This convenience method is a shortcut for {@code registerNameAndClass(name, value.getClass(), value);}
+	 * 
+	 * @param name
+	 * 			The name of the fields to inject.
+	 * @param value
+	 * 			The value to inject.
+	 */
+	public void registerNameAndClass(final String name, final Object value) {
+		registerNameAndClass(name, value.getClass(), value);
+	}
+	
+	/**
+	 * Makes {@code value} available as injected value.
+	 * <br><br>
+	 * {@code value} will be injected into fields called {@code name} or which type 
+	 * is {@code clazz}.
+	 * 
+	 * @param name
+	 * 			The name of the fields to inject.
+	 * @param clazz
+	 * 			The type of the fields to inject.
+	 * @param value
+	 * 			The value to inject.
+	 */
 	public void registerNameAndClass(final String name, final Class<?> clazz, final Object value) {
 		registerClass(clazz, value);
 		registerName(name, value);
