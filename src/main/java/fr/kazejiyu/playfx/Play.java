@@ -9,7 +9,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import fr.kazejiyu.playfx.exceptions.UnloadedActException;
-import fr.kazejiyu.playfx.injection.InjectorFactory;
+import fr.kazejiyu.playfx.injection.InjectedControllerFactory;
 import javafx.animation.Animation;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -29,7 +29,7 @@ public final class Play {
 	private final Stage stage;
 	
 	/** Creates injected controllers  */
-	private final InjectorFactory factory;
+	private final InjectedControllerFactory factory;
 	
 	/** Application's states */
 	private final Map <String, Object> acts = new HashMap<>();
@@ -55,7 +55,7 @@ public final class Play {
 	 */
 	public Play(Stage stage, Function <String,Object> instanciator) {
 		this.stage = Objects.requireNonNull(stage);
-		this.factory = new InjectorFactory(instanciator);
+		this.factory = new InjectedControllerFactory(instanciator);
 	}
 	
 	/** Convenience method that calls {@code stage.setTitle(title); } */

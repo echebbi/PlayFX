@@ -11,13 +11,13 @@ import fr.kazejiyu.playfx.configuration.SerializedProperties;
 import javafx.util.Callback;
 
 /**
- * A custom controller factory that handle dependency injection.
+ * A custom controller factory that handles dependency injection.
  * <br><br>
  * Instances of this class are supposed to be given to {@FXMLLoader.setControllerFactory} method.
  * 
  * @author Emmanuel CHEBBI
  */
-public class InjectorFactory implements Callback<Class<?>, Object> {
+public class InjectedControllerFactory implements Callback<Class<?>, Object> {
 	
 	private static final String CONFIG_FILE = "config.properties"; 
 	
@@ -26,7 +26,7 @@ public class InjectorFactory implements Callback<Class<?>, Object> {
 	
 	private static final Logger LOGGER = Logger.getLogger(Play.class.getName());
 	
-	public InjectorFactory(Function <String,Object> instanciator) {
+	public InjectedControllerFactory(Function <String,Object> instanciator) {
 		this.instanciator = Objects.requireNonNull(instanciator);
 		this.injector = new Injector(this.instanciator);
 	}
