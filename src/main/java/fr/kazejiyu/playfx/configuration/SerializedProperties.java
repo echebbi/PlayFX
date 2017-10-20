@@ -1,5 +1,6 @@
 package fr.kazejiyu.playfx.configuration;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -20,6 +21,14 @@ public class SerializedProperties {
 	
 	/** The properties loaded from the file */
 	private final Properties properties = new Properties();
+	
+	public SerializedProperties() {
+		this(emptyInputStream());
+	}
+	
+	private static InputStream emptyInputStream() {
+		return new ByteArrayInputStream("".getBytes());
+	}
 	
 	/**
 	 * Creates a lazy serialized property.

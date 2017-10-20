@@ -1,6 +1,7 @@
 package fr.kazejiyu.playfx.injection;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -46,11 +47,18 @@ public class InjectedControllerFactory implements Callback<Class<?>, Object> {
 	}
 	
 	private SerializedProperties loadPropertiesFor(Class <?> clazz) {
-		SerializedProperties prop = new SerializedProperties(clazz.getResourceAsStream(CONFIG_FILE));
+		
+		SerializedProperties prop = new SerializedProperties();
+		
+		InputStream is = clazz.getResourceAsStream(CONFIG_FILE);
+		
+		if( is == null )
+			return prop;
 		
 		try {
+			prop = new SerializedProperties(is);
 			prop.load();
-		} catch(IOException e) {
+		} catch(NullPointerException | IOException e) {
 			// property file may be missing
 			// TODO only catch FileNotFoundException & add proper handling for other errors
 			e.printStackTrace();
