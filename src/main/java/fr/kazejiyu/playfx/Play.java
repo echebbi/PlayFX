@@ -62,7 +62,7 @@ public final class Play {
 	public void setTitle(String title)	{ stage.setTitle(title); }
 	
 	/** Convenience method that calls {@code stage.show();} */
-	public void start()	{ stage.show(); }
+	public void show()	{ stage.show(); }
 	
 	/** Returns the stage of the piece */
 	public Stage getStage() {
