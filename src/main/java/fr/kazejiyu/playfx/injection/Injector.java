@@ -3,7 +3,6 @@ package fr.kazejiyu.playfx.injection;
 import java.lang.reflect.Field;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -12,6 +11,11 @@ import java.util.logging.Logger;
 import fr.kazejiyu.playfx.Play;
 import fr.kazejiyu.playfx.configuration.SerializedProperties;
 
+/**
+ * Injects fields annotated with {@link Inject}.
+ * 
+ * @author Emmanuel CHEBBI 
+ */
 class Injector {
 	
 	private final Function<String, Object> instanciator;
@@ -27,7 +31,13 @@ class Injector {
 		
 		for( final Field field : clazz.getDeclaredFields() ) {
 			if( field.isAnnotationPresent(Inject.class) ) {
-				boolean injectionSucceeded = tryToInjectFieldUponName(instance, field, properties);
+				boolean injectionSucceeded = tryToInjectFieldWithConfigurationFile(instance, field, properties);
+
+				if( ! injectionSucceeded )
+					injectionSucceeded = tryToInjectFieldWithProperties(instance, field);
+				
+				if( ! injectionSucceeded )
+					injectionSucceeded = tryToInjectFieldWithInstanciator(instance, field);
 				
 				if( ! injectionSucceeded )
 					LOGGER.log(Level.WARNING, "Unable to inject the field : {0}", field);
@@ -36,25 +46,30 @@ class Injector {
 		
 		return instance;
 	}
+	
+	private boolean tryToInjectFieldWithConfigurationFile(Object instance, Field field, SerializedProperties properties) {
+		return tryToInject(instance, field, name -> properties.get(name).orElse(null));
+	}
+	
+	private boolean tryToInjectFieldWithProperties(Object instance, Field field) {
+		return tryToInject(instance, field, System::getProperty);
+	}
 
-	private boolean tryToInjectFieldUponName(Object instance, Field field, SerializedProperties properties) {
+	private boolean tryToInjectFieldWithInstanciator(Object instance, Field field) {
+		return tryToInject(instance, field, instanciator);
+	}
+	
+	private boolean tryToInject(Object instance, Field field, Function <String,Object> valueToInject) {
 		Inject inject = field.getAnnotation(Inject.class);
 		String name = inject.name().isEmpty() ? field.getName() : inject.name();
 		
-		// Attempt to load the value from the property file first
-		Optional <Object> prop = properties.get(name);
-		
-		if( prop.isPresent() ) 
-			if( injectField(instance, field, prop.get()) )
-				return true;
-		
-		Object value = instanciator.apply(name);
+		Object value = valueToInject.apply(name);
 		
 		// Injecting null would erase possible default values
 		if( value == null )
 			return false;
 		
-		return injectField(instance, field, value);
+		return injectField(instance, field, value);		
 	}
 	
 	private boolean injectField(final Object instance, final Field field, Object value) {
