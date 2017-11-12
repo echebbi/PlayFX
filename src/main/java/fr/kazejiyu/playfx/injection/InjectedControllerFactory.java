@@ -61,7 +61,7 @@ public class InjectedControllerFactory implements Callback<Class<?>, Object> {
 		} catch(NullPointerException | IOException e) {
 			// property file may be missing
 			// TODO only catch FileNotFoundException & add proper handling for other errors
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Failed to load the configuration file \"{0}\" : {1} ", new Object[] {CONFIG_FILE, e});
 		}
 		
 		return prop;
