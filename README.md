@@ -6,7 +6,7 @@ As of now, the work is still in progress and the framework may change in the fut
 
 ## Presentation
 
-The heart of the framework is the class [Play](https://github.com/KazeJiyu/playfx/blob/master/src/main/java/fr/kazejiyu/playfx/Play.java). It's usage is pretty close to the standard JavaFX's API ; here is a sample of a simple application :
+The heart of the framework is the class [Play](https://github.com/KazeJiyu/playfx/blob/master/src/main/java/fr/kazejiyu/playfx/Play.java). Its usage is pretty close to the standard JavaFX's API ; here is a sample of a simple application :
 
 ```java
 public class Launcher extends Application {
