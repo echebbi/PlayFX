@@ -1,4 +1,4 @@
-package fr.kazejiyu.playfx.injection;
+package fr.kazejiyu.playfx.injection.internal;
 
 import java.lang.reflect.Field;
 import java.security.AccessController;
@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import fr.kazejiyu.playfx.Play;
 import fr.kazejiyu.playfx.configuration.SerializedProperties;
+import fr.kazejiyu.playfx.injection.Inject;
 
 /**
  * Injects fields annotated with {@link Inject}.

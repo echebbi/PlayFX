@@ -1,4 +1,4 @@
-package fr.kazejiyu.playfx.injection;
+package fr.kazejiyu.playfx.injection.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
