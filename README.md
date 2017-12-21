@@ -47,3 +47,26 @@ Usage, documentation and samples can be found on [PlayFX's wiki](https://github.
 ## Installation
 
 As of now, `PlayFX` is not mature enough to be delivered through Maven. Hence, one has to build library's JAR manually in order to use it in a project.
+
+### Generate JAR through Maven
+
+__Important__: you must run Maven 3.x with a JRE 9 in order to launch the build.
+
+- Clone the repository:
+
+```
+git clone https://github.com/KazeJiyu/PlayFX.git
+```
+
+- Launch maven build:
+
+```
+cd PlayFX
+mvn clean package
+```
+
+- The JAR file should have been generated in `target` as `fr.kazejiyu.playfx.jar`
+
+### Java 9 Support
+
+`PlayFX` is Java 9-aware. Its Maven build generates multi-release jars that can be used indifferently from Java 8 and Java 9 applications.
