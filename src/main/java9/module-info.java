@@ -1,15 +1,14 @@
 module fr.kazejiyu.playfx {
-	// JDK9
+	// JDK 9
 	requires java.base;
 	requires java.logging;
 	
 	// JavaFX
-	requires javafx.base;
 	requires javafx.fxml;
-	requires transitive javafx.graphics;
+	requires javafx.graphics;
 	
 	// Exported packages
 	exports fr.kazejiyu.playfx;
-	exports fr.kazejiyu.playfx.injection;
 	exports fr.kazejiyu.playfx.exceptions;
+	exports fr.kazejiyu.playfx.injection;
 }
