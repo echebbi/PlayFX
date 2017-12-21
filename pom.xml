@@ -11,10 +11,13 @@
 	<url>http://maven.apache.org</url>
 
 	<properties>
-		<maven.compiler.source>1.9</maven.compiler.source>
-		<maven.compiler.target>1.9</maven.compiler.target>
-		<maven.compiler.release>9</maven.compiler.release>
+		<jarName>fr.kazejiyu.playfx</jarName>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<java9.sourceDirectory>${project.basedir}/src/main/java</java9.sourceDirectory>
+		<java9.build.outputDirectory>${project.build.directory}/classes-java9</java9.build.outputDirectory>
 	</properties>
 
 	<dependencies>
@@ -26,24 +29,75 @@
 		</dependency>
 	</dependencies>
 
+	<!-- Build a multi-release jar. Inspired by: https://github.com/ktoso/akka-streams-jdk9-strawman-mvn -->
 	<build>
+		<plugins>
+
+			<!-- Compile java9 classes -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>compile-java9</id>
+						<phase>compile</phase>
+						<configuration>
+							<target>
+							</target>
+							<tasks>
+								<property name="compile_classpath" refid="maven.compile.classpath" />
+								<mkdir dir="${java9.build.outputDirectory}" />
+								<javac srcdir="${java9.sourceDirectory}" destdir="${java9.build.outputDirectory}"
+									classpath="${compile_classpath}" includeantruntime="false" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- put java 9 classes to /META-INF/versions/9 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.outputDirectory}/META-INF/versions/9</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${java9.build.outputDirectory}</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- build the jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Multi-Release>true</Multi-Release>
+						</manifestEntries>
+					</archive>
+					<finalName>${jarName}</finalName>
+				</configuration>
+			</plugin>
+
+		</plugins>
 		<pluginManagement>
 			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.7.0</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>3.0.2</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-toolchains-plugin</artifactId>
-					<version>1.1</version>
-				</plugin>
 				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
@@ -58,13 +112,13 @@
 											org.apache.maven.plugins
 										</groupId>
 										<artifactId>
-											maven-toolchains-plugin
+											maven-antrun-plugin
 										</artifactId>
 										<versionRange>
-											[1.1,)
+											[1.3,)
 										</versionRange>
 										<goals>
-											<goal>toolchain</goal>
+											<goal>run</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
@@ -77,31 +131,6 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-toolchains-plugin</artifactId>
-				<configuration>
-					<toolchains>
-						<jdk>
-							<version>1.9</version>
-							<vendor>oracle</vendor>
-						</jdk>
-					</toolchains>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>toolchain</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
 	</build>
 
 </project>
