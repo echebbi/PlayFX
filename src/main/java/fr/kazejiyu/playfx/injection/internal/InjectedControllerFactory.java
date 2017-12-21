@@ -1,8 +1,10 @@
 package fr.kazejiyu.playfx.injection.internal;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
+import java.lang.reflect.InvocationTargetException;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,18 +30,21 @@ public class InjectedControllerFactory implements Callback<Class<?>, Object> {
 	private static final Logger LOGGER = Logger.getLogger(Play.class.getName());
 	
 	public InjectedControllerFactory(Function <String,Object> instanciator) {
-		this.instanciator = Objects.requireNonNull(instanciator);
+		this.instanciator = requireNonNull(instanciator);
 		this.injector = new Injector(this.instanciator);
 	}
 
 	@Override
 	public Object call(Class<?> clazz) {
 		try {
-			Object instance = clazz.newInstance();
+			Object instance = clazz.getDeclaredConstructor().newInstance();
 			SerializedProperties properties = loadPropertiesFor(clazz);
 			
 			return injector.injectFields(instance, properties);
-		} catch (InstantiationException | IllegalAccessException e) {
+			
+		} catch (NoSuchMethodException | IllegalAccessException | SecurityException e) {
+			LOGGER.log(Level.SEVERE, "Cannot access default constructor of {0} : {1}", new Object[] {clazz, e});
+		} catch (IllegalArgumentException | InvocationTargetException | InstantiationException e) {
 			LOGGER.log(Level.SEVERE, "Failed to inject instance of {0} : {1}", new Object[] {clazz, e});
 		}
 

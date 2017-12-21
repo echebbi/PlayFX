@@ -1,15 +1,16 @@
 package fr.kazejiyu.playfx;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import fr.kazejiyu.playfx.exceptions.UnloadedActException;
-import fr.kazejiyu.playfx.injection.InjectedControllerFactory;
+import fr.kazejiyu.playfx.injection.internal.InjectedControllerFactory;
 import javafx.animation.Animation;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -54,15 +55,19 @@ public final class Play {
 	 * 			Defines the values available to be injected into controllers.
 	 */
 	public Play(Stage stage, Function <String,Object> instanciator) {
-		this.stage = Objects.requireNonNull(stage);
+		this.stage = requireNonNull(stage);
 		this.factory = new InjectedControllerFactory(instanciator);
 	}
 	
 	/** Convenience method that calls {@code stage.setTitle(title); } */
-	public void setTitle(String title)	{ stage.setTitle(title); }
+	public void setTitle(String title) { 
+		stage.setTitle(title); 
+	}
 	
 	/** Convenience method that calls {@code stage.show();} */
-	public void show()	{ stage.show(); }
+	public void show() { 
+		stage.show(); 
+	}
 	
 	/** Returns the stage of the piece */
 	public Stage getStage() {
