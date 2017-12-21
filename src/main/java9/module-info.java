@@ -5,7 +5,7 @@ module fr.kazejiyu.playfx {
 	
 	// JavaFX
 	requires javafx.fxml;
-	requires javafx.graphics;
+	requires transitive javafx.graphics;
 	
 	// Exported packages
 	exports fr.kazejiyu.playfx;
