@@ -1,12 +1,16 @@
 # PlayFX
-PlayFX is a light framework for managing multiple scenes in JavaFX. More specifically, it provides an easy way to manage the different states of a JavaFX application and to pass from one to another. Moreover, it comes with an embedded [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) system.
+PlayFX is a light framework for managing multiple scenes in JavaFX. More specifically, it provides an easy way to manage the different states of a JavaFX application and to pass from one to another. In addition, it comes with an embedded [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) system.
 
 ## A Work in Progress
 As of now, the work is still in progress and the framework may change in the future.
 
-## Presentation
+## Quick start
 
-The heart of the framework is the class [Play](https://github.com/KazeJiyu/playfx/blob/master/src/main/java/fr/kazejiyu/playfx/Play.java). Its usage is pretty close to the standard JavaFX's API ; here is a sample of a simple application :
+### Launch the application 
+
+The code required to launch a JavaFX application with `PlayFX` is pretty close to the standard JavaFX's API. 
+
+The heart of the framework is the [Play](https://github.com/KazeJiyu/playfx/blob/master/src/main/java/fr/kazejiyu/playfx/Play.java) class, which represents a set of `Scenes`. Its use is demonstrated in the following code snippet :
 
 ```java
 public class Launcher extends Application {
@@ -16,12 +20,12 @@ public class Launcher extends Application {
     // Initialize the play
     Play play = new Play(primaryStage);
 
-    // Prepare a new scene and call it "firstView". 
+    // Prepare a new scene and call it "welcome". 
     // It is semantically equal to FXMLLoader.load
-    play.prepare("firstView", MyController.class.getResource("my.fxml"));
+    play.prepare("welcome", WelcomeController.class.getResource("welcome.fxml"));
 
-    // Put the scene "firstView" on the stage. It is semantically equal to stage.setScene
-    play.setScene("firstView");
+    // Put the scene "welcome" on the stage. It is semantically equal to stage.setScene
+    play.setScene("welcome");
 
     // Finally, let the show begin ! It is semantically equal to stage.show
     play.show();
@@ -33,12 +37,31 @@ public class Launcher extends Application {
 }
 ```
 
-`PlayFX`'s main advantage is its ability to inject controllers. Values to inject can be specified via three different ways :
-- Command line arguments,
-- Custom factory method,
-- Property file.
+### Inject dependencies
 
-Further explanations can be found in the relevant [wiki's section](https://github.com/KazeJiyu/PlayFX/wiki/Dependency-Injection).
+#### Provide values to inject
+
+`PlayFX`'s main advantage is its ability to inject controllers. Values to inject can be specified via three different ways :
+- command line arguments,
+- custom factory method,
+- property file.
+
+Detail explanations can be found in the [relevant wiki's section](https://github.com/KazeJiyu/PlayFX/wiki/Dependency-Injection).
+
+#### Ask for values
+
+A controller can ask for a value by annotating a field with [`@Inject`](https://github.com/KazeJiyu/PlayFX/blob/master/src/main/java/fr/kazejiyu/playfx/injection/Inject.java) : 
+
+```java
+public class LoginController implements Initializable {
+	
+    @Inject private String usr;
+    @Inject private String pwd;
+    @Inject(name="app.title") private String title;
+	
+    // rest of the class
+}
+```
 
 ## Documentation
 
@@ -69,4 +92,4 @@ mvn clean package
 
 ### Java 9 Support
 
-`PlayFX` is Java 9-aware. Its Maven build generates multi-release jars that can be used indifferently from Java 8 and Java 9 applications.
+`PlayFX` is Java 9-aware. Its Maven build generates multi-release JARs that can be used indifferently from Java 8 and Java 9 applications.
