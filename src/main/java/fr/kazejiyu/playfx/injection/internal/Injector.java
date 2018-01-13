@@ -77,7 +77,7 @@ class Injector {
 		final AtomicBoolean injectionSucceeded = new AtomicBoolean(true);
 		
 		AccessController.doPrivileged((PrivilegedAction<?>) () -> {
-			boolean isAccessible = field.canAccess(instance);
+			boolean isAccessible = field.isAccessible();
 				
 			try {
 				field.setAccessible(true);
