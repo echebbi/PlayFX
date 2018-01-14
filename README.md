@@ -1,8 +1,7 @@
 # PlayFX
-PlayFX is a light framework for managing multiple scenes in JavaFX. More specifically, it provides an easy way to manage the different states of a JavaFX application and to pass from one to another. In addition, it comes with an embedded [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) system.
+![build status](https://travis-ci.org/KazeJiyu/PlayFX.svg?branch=master)
 
-## A Work in Progress
-As of now, the work is still in progress and the framework may change in the future.
+PlayFX is a light framework for managing multiple scenes in JavaFX. More specifically, it provides an easy way to manage the different states of a JavaFX application and to pass from one to another. In addition, it comes with an embedded [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) system.
 
 ## Quick start
 
@@ -37,6 +36,19 @@ public class Launcher extends Application {
 }
 ```
 
+### Change current Scene
+
+Once a scene has been `prepared`, the `setScene` method can be used to show it:
+
+```java
+// into WelcomeController
+play.prepare("users", UsersController.class.getResource("users.fxml"));
+play.setScene("users");
+```
+
+This method has optional parameters that can be specified to trigger an animated transition
+when opening the new scene.
+
 ### Inject dependencies
 
 #### Provide values to inject
@@ -46,7 +58,7 @@ public class Launcher extends Application {
 - custom factory method,
 - property file.
 
-Detail explanations can be found in the [relevant wiki's section](https://github.com/KazeJiyu/PlayFX/wiki/Dependency-Injection).
+Detailed explanations can be found in the [relevant wiki's section](https://github.com/KazeJiyu/PlayFX/wiki/Dependency-Injection).
 
 #### Ask for values
 
@@ -55,9 +67,9 @@ A controller can ask for a value by annotating a field with [`@Inject`](https://
 ```java
 public class LoginController implements Initializable {
 	
-    @Inject private String usr;
-    @Inject private String pwd;
-    @Inject(name="app.title") private String title;
+    @Inject private String usr;                      // will inject the value "usr"
+    @Inject private String pwd;                      // will inject the value "pwd"
+    @Inject(name="app.title") private String title;  // will inject the value "app.title"
 	
     // rest of the class
 }
