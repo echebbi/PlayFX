@@ -8,7 +8,30 @@
 	<packaging>jar</packaging>
 
 	<name>PlayFX</name>
+	<description>Light framework for managing multiple scenes in JavaFX</description>
 	<url>https://github.com/KazeJiyu/PlayFX</url>
+	
+	<issueManagement>
+		<url>https://github.com/KazeJiyu/JavaFX/issues</url>
+		<system>GitHub Issues</system>
+	</issueManagement>
+	
+	<licenses>
+		<license>
+			<name>Apache License 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<developers>
+		<developer>
+			<id>KazeJiyu</id>
+			<name>Emmanuel CHEBBI</name>
+			<email>emmanuel.chebbi@outlook.fr</email>
+			<url>https://github.com/KazeJiyu</url>
+		</developer>	
+	</developers>
 
 	<properties>
 		<jarName>fr.kazejiyu.playfx</jarName>
