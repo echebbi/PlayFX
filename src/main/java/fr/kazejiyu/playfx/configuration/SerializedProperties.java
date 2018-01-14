@@ -12,7 +12,7 @@ import java.util.Properties;
 /**
  * Properties serialized into a file as pairs (key=value).
  * <br><br>
- * This class internaly uses instance of the standard {@link Properties} class
+ * This class internally uses instance of the standard {@link Properties} class
  * in order to load the property file.
  * 
  * @author Emmanuel CHEBBI

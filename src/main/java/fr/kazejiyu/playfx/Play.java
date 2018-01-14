@@ -18,9 +18,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * Represents a set of {@link Act}s.
- * <br><br>
- * This class is intented to ease the use of multiple FXML scenes and to smooth the transitions between them.
+ * A set of {@link Act}s. <br>
+ * <br>
+ * This class is intended to ease the use of multiple FXML scenes and to smooth the transitions between them.
  * 
  * @author Emmanuel CHEBBI
  */
@@ -69,7 +69,7 @@ public final class Play {
 		stage.show(); 
 	}
 	
-	/** Returns the stage of the piece */
+	/** @return play's current stage */
 	public Stage getStage() {
 		return stage;
 	}
@@ -108,7 +108,7 @@ public final class Play {
 	 * Frees an act from memory.
 	 * 
 	 * @param name
-	 * 			The name of the act to free
+	 * 			The name of the act to free.
 	 */
 	public Play removeScene(String name) {
 		acts.remove(name);
@@ -118,12 +118,20 @@ public final class Play {
 	}
 	
 	/**
-	 * Sets the current scene of the piece.
+	 * Sets the current scene of the play. <br>
+	 * <br>
+	 * Before being set, a scene must be {@link #prepare(String, URL) prepared}.
 	 * 
 	 * @param name
 	 * 			The name of the act to show.
 	 * 
+	 * @return a reference to self, enabling method chaining
+	 * 
 	 * @throws UnloadedActException if the act has not been loaded
+	 * 
+	 * @see #prepare(String, URL)
+	 * @see #setScene(String, Animation)
+	 * @see {@link #setScene(String, BiFunction)}
 	 */
 	public Play setScene(String name) {
 		if( ! scenes.containsKey(name) )
@@ -135,16 +143,53 @@ public final class Play {
 		return this;
 	}
 	
-	public Play makeOnStage(String name, Animation animation) {
-		return makeOnStage(name, (stag,scene) -> animation);
+	/**
+	 * Sets the current scene of the play using an animated transition. <br>
+	 * <br>
+	 * Before being set, a scene must be {@link #prepare(String, URL) prepared}.
+	 * 
+	 * @param name
+	 * 			The name of the act to show.
+	 * @param transition
+	 * 			The transition to play.
+	 *  
+	 * @return a reference to self, enabling method chaining
+	 * 
+	 * @throws UnloadedActException if the act has not been loaded
+	 * 
+	 * @see #prepare(String, URL)
+	 * @see #setScene(String)
+	 * @see #setScene(String, BiFunction)
+	 */
+	public Play setScene(String name, Animation transition) {
+		return setScene(name, (stag,scene) -> transition);
 	}
 	
-	public Play makeOnStage(String name, BiFunction <Stage,Scene,Animation> animation) {
+	/**
+	 * Sets the current scene of the play using an animated transition. <br>
+	 * <br>
+	 * Before being set, a scene must be {@link #prepare(String, URL) prepared}.
+	 * 
+	 * @param name
+	 * 			The name of the act to show.
+	 * @param transition
+	 * 			Returns transition to play. Takes the current stage and the 
+	 * 			next scene as arguments.
+	 *  
+	 * @return a reference to self, enabling method chaining
+	 * 
+	 * @throws UnloadedActException if the act has not been loaded
+	 * 
+	 * @see #prepare(String, URL)
+	 * @see #setScene(String)
+	 * @see #setScene(String, Animation)
+	 */
+	public Play setScene(String name, BiFunction <Stage,Scene,Animation> transition) {
 		if( ! scenes.containsKey(name) )
 			throw new UnloadedActException(name);
 		
 		Scene nextScene = scenes.get(name);
-		Animation anim = animation.apply(stage, nextScene);
+		Animation anim = transition.apply(stage, nextScene);
 		
 		anim.setOnFinished(e -> setScene(name));
 		anim.play();

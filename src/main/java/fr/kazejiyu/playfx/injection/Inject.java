@@ -7,6 +7,11 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+/**
+ * Appoints a field to inject.
+ * 
+ * @author Emmanuel CHEBBI
+ */
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
