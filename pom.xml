@@ -34,7 +34,7 @@
 	</developers>
 
 	<properties>
-		<jarName>fr.kazejiyu.playfx</jarName>
+		<jar.name>fr.kazejiyu.playfx</jar.name>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -116,7 +116,39 @@
 							<Multi-Release>true</Multi-Release>
 						</manifestEntries>
 					</archive>
-					<finalName>${jarName}</finalName>
+					<finalName>${jar.name}</finalName>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.3</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<finalName>${jar.name}</finalName>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.0.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<finalName>${jar.name}</finalName>
 				</configuration>
 			</plugin>
 
