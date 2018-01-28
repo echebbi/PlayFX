@@ -25,12 +25,13 @@ import java.util.logging.Logger;
 
 import fr.kazejiyu.playfx.Play;
 import fr.kazejiyu.playfx.configuration.SerializedProperties;
+import javafx.fxml.FXMLLoader;
 import javafx.util.Callback;
 
 /**
  * A custom controller factory that handles dependency injection. <br>
  * <br>
- * Instances of this class are supposed to be given to {@FXMLLoader.setControllerFactory} method.
+ * Instances of this class are supposed to be given as argument to {@link FXMLLoader#setControllerFactory(Callback)}.
  * 
  * @author Emmanuel CHEBBI
  */

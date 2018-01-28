@@ -65,15 +65,23 @@ public final class Play {
 	 * 
 	 * @param stage
 	 * 			The primary stage of the application.
-	 * @param dependencies
+	 * @param instanciator
 	 * 			Defines the values available to be injected into controllers.
+	 * 			Takes the name of the variable to inject and return its value.
 	 */
 	public Play(Stage stage, Function <String,Object> instanciator) {
 		this.stage = requireNonNull(stage);
 		this.factory = new InjectedControllerFactory(instanciator);
 	}
 	
-	/** Convenience method that calls {@code stage.setTitle(title); } */
+	/** 
+	 * Sets the title of the current stage. <br>
+	 * <br>
+	 * Equivalent to {@code stage.setTitle(title); }
+	 * 
+	 * @param title
+	 * 			The new stage's title
+	 */
 	public void setTitle(String title) { 
 		stage.setTitle(title); 
 	}
@@ -96,7 +104,9 @@ public final class Play {
 	 * @param location
 	 * 			The location of the .fxml file that describes the scene. 
 	 * 
-	 * @return the loaded act
+	 * @return the controller loaded by {@code FXMLLoader}.
+	 * 
+	 * @param <T> The type of the controller loaded by {@code FXMLLoader}.
 	 * 
 	 * @throws IOException if {@code FXMLLoader} fails to load {@code location}.
 	 */
@@ -123,6 +133,8 @@ public final class Play {
 	 * 
 	 * @param name
 	 * 			The name of the act to free.
+	 * 
+	 * @return a reference to self, enabling method chaining
 	 */
 	public Play removeScene(String name) {
 		acts.remove(name);
@@ -145,7 +157,7 @@ public final class Play {
 	 * 
 	 * @see #prepare(String, URL)
 	 * @see #setScene(String, Animation)
-	 * @see {@link #setScene(String, BiFunction)}
+	 * @see #setScene(String, BiFunction)
 	 */
 	public Play setScene(String name) {
 		if( ! scenes.containsKey(name) )
